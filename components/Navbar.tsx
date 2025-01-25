@@ -68,16 +68,14 @@ export default function Navbar() {
               <LaunchUI />
               TuxCode
             </a>
-            <Navigation />
+            {/* <Navigation />  */}
+            {/* IF you want to change anything in navbar change this */}
           </NavbarLeft>
           <NavbarRight>
             {isAuthenticated ? (
               <>
                 <Button variant="ghost" onClick={handleLogout}>
                   Logout
-                </Button>
-                <Button variant="default" asChild>
-                  <a href="/editor">Editor</a>
                 </Button>
               </>
             ) : (
@@ -104,7 +102,7 @@ export default function Navbar() {
               <SheetContent side="right">
                 <nav className="grid gap-6 text-lg font-medium">
                   <a
-                    href="/"
+                    href="/landing"
                     className="flex items-center gap-2 text-xl font-bold"
                   >
                     <span>TuxCode</span>
