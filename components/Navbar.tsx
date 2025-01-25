@@ -17,6 +17,7 @@ import {
   Button,
 } from '@nextui-org/react';
 import { useRouter } from 'next/navigation';
+import axios from 'axios'; // Import axios for API calls
 
 export default function Navbar() {
   const { data: session, status } = useSession();
@@ -24,16 +25,41 @@ export default function Navbar() {
   const [mounted, setMounted] = useState(false);
   const router = useRouter();
 
-  // Handle logout
-  const handleLogout = () => {
-    localStorage.removeItem('access_token'); // Clear access token
-    router.push('/login'); // Redirect to login page
-  };
-
   // Ensure the component is mounted before rendering
   useEffect(() => {
     setMounted(true);
   }, []);
+
+  // Handle logout
+  const handleLogout = async () => {
+    try {
+      const accessToken = localStorage.getItem('access_token');
+      if (!accessToken) {
+        throw new Error('No access token found.');
+      }
+
+      // Redirect to the login page
+      router.push('/landing');
+
+      // Call the logout API
+      await axios.post(
+        'http://192.168.0.252:8000/auth/jwt/logout',
+        {}, // Empty body
+        {
+          headers: {
+            accept: 'application/json',
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      );
+
+      // Clear the access token from localStorage
+      localStorage.removeItem('access_token');
+
+    } catch (error) {
+      console.error('Logout failed:', error);
+    }
+  };
 
   if (!mounted) {
     return null; // Avoid rendering until mounted
@@ -74,7 +100,7 @@ export default function Navbar() {
         {status === 'authenticated' && (
           <NavbarItem>
             <Button
-              onPress={handleLogout}
+              onPress={handleLogout} // Use the handleLogout function
               color="danger"
               variant="flat"
               className="hover:bg-red-600 hover:text-white"
@@ -104,7 +130,7 @@ export default function Navbar() {
                 <p className="font-semibold">{session.user?.email}</p>
               </DropdownItem>
               <DropdownItem key="settings">My Settings</DropdownItem>
-              <DropdownItem key="logout" color="danger" onClick={() => signOut()}>
+              <DropdownItem key="logout" color="danger" onClick={handleLogout}>
                 Log Out
               </DropdownItem>
             </DropdownMenu>

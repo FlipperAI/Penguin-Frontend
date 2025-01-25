@@ -17,6 +17,7 @@ export default function RootLayout({
 
   // Check if the current route is in the noNavbarRoutes array
   const showNavbar = !noNavbarRoutes.includes(pathname);
+  
   console.log(pathname)
   console.log(showNavbar)
   return (
