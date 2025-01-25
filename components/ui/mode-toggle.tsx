@@ -27,7 +27,7 @@ export function ModeToggle() {
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger asChild>
+      <DropdownMenuTrigger aschid>
         <Button variant="ghost" className="gap-1 px-2 py-0 text-xs">
           <span className="capitalize">{theme}</span>
           <span className="inline"> theme</span>

@@ -11,6 +11,7 @@ import { useTheme } from "next-themes";
 import Github from "@/components/logos/github";
 import Hero from '@/components/sections/hero/default';
 import { AuroraBackground } from '@/components/ui/AuroraBackground';
+import { MacbookScroll } from '@/components/MacbookScroll';
 
 const testimonials = [
   {
@@ -38,7 +39,6 @@ export default function LandingPage() {
     <div className="min-h-screen bg-gradient-to-r from-black-50 to-purple-50 flex flex-col items-center justify-center p-6">
       {/* Hero Section */}
       <Hero/>
-
       {/* Testimonials Section */}
       <div className="w-full max-w-6xl mx-auto px-4">
         <h2 className="text-3xl font-bold text-center mb-8 mt-10">What Our Users Say</h2>

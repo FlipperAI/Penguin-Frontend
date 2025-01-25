@@ -83,13 +83,13 @@ export default function Navbar() {
                 <a href="/login" className="hidden text-sm md:block">
                   Sign in
                 </a>
-                <Button variant="default" asChild>
+                <Button variant="default" aschid>
                   <a href="/signup">Get Started</a>
                 </Button>
               </>
             )}
             <Sheet>
-              <SheetTrigger asChild>
+              <SheetTrigger aschid>
                 <Button
                   variant="ghost"
                   size="icon"
