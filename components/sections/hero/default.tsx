@@ -21,7 +21,7 @@ export default function Hero() {
         <div className="flex flex-col items-center gap-6 text-center sm:gap-12">
           <Badge variant="outline" className="animate-appear">
             <span className="text-muted-foreground">
-              New version of Launch UI is out!
+              New version of FLipper Judge is out!
             </span>
             <a
               href="/"

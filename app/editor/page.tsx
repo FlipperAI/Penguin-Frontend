@@ -1,11 +1,12 @@
 'use client';
 
-import { useSession, SessionProvider } from 'next-auth/react';
+import { useSession } from 'next-auth/react';
 import { redirect } from 'next/navigation';
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import Editor from '@monaco-editor/react';
+import { useTheme } from 'next-themes';
 
 export default function CodeEditorPage() {
   const { data: session } = useSession();
@@ -13,7 +14,8 @@ export default function CodeEditorPage() {
   const [output, setOutput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [language, setLanguage] = useState('python');
-  console.log(session)
+  const { theme } = useTheme(); // Get the current theme
+
   // Redirect to login if not authenticated
   if (!session) {
     redirect('/login');
@@ -54,21 +56,27 @@ export default function CodeEditorPage() {
     }
   };
 
+  // Define background and text colors based on the theme
+  const backgroundColor = theme === 'dark' ? 'bg-gray-900' : 'bg-white';
+  const textColor = theme === 'dark' ? 'text-white' : 'text-gray-900';
+  const borderColor = theme === 'dark' ? 'border-gray-700' : 'border-gray-200';
+  const editorTheme = theme === 'dark' ? 'vs-dark' : 'vs-light'; // Monaco Editor theme
+
   return (
-    <div className="min-h-screen bg-gray-100 flex">
+    <div className={`min-h-screen ${backgroundColor} flex flex-col lg:flex-row`}>
       {/* Left Panel: Question Details */}
-      <div className="w-1/4 bg-white p-6 border-r border-gray-200 overflow-y-auto">
-        <h1 className="text-2xl font-bold mb-4 text-gray-900">{question.title}</h1>
-        <p className="text-gray-700 mb-4">{question.description}</p>
+      <div className={`w-full lg:w-1/4 ${backgroundColor} p-6 border-b lg:border-r ${borderColor} overflow-y-auto`}>
+        <h1 className={`text-2xl font-bold mb-4 ${textColor}`}>{question.title}</h1>
+        <p className={`${textColor} mb-4`}>{question.description}</p>
 
         <div className="mb-6">
-          <h2 className="text-lg font-bold mb-2">Examples:</h2>
+          <h2 className={`text-lg font-bold mb-2 ${textColor}`}>Examples:</h2>
           {question.examples.map((example, index) => (
-            <div key={index} className="mb-4 p-4 bg-gray-50 rounded-lg">
-              <p className="text-sm text-gray-600">
+            <div key={index} className={`mb-4 p-4 ${theme === 'dark' ? 'bg-gray-800' : 'bg-gray-50'} rounded-lg`}>
+              <p className={`text-sm ${theme === 'dark' ? 'text-gray-300' : 'text-gray-600'}`}>
                 <strong>Input:</strong> {example.input}
               </p>
-              <p className="text-sm text-gray-600">
+              <p className={`text-sm ${theme === 'dark' ? 'text-gray-300' : 'text-gray-600'}`}>
                 <strong>Output:</strong> {example.output}
               </p>
             </div>
@@ -76,8 +84,8 @@ export default function CodeEditorPage() {
         </div>
 
         <div>
-          <h2 className="text-lg font-bold mb-2">Constraints:</h2>
-          <ul className="list-disc list-inside text-sm text-gray-600">
+          <h2 className={`text-lg font-bold mb-2 ${textColor}`}>Constraints:</h2>
+          <ul className={`list-disc list-inside text-sm ${theme === 'dark' ? 'text-gray-300' : 'text-gray-600'}`}>
             {question.constraints.map((constraint, index) => (
               <li key={index}>{constraint}</li>
             ))}
@@ -86,13 +94,13 @@ export default function CodeEditorPage() {
       </div>
 
       {/* Middle Panel: Code Editor */}
-      <div className="w-1/2 bg-white p-6 border-r border-gray-200">
+      <div className={`w-full lg:w-1/2 ${backgroundColor} p-6 border-b lg:border-r ${borderColor}`}>
         <div className="mb-4">
-          <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="language">
+          <label className={`block ${textColor} text-sm font-bold mb-2`} htmlFor="language">
             Select Language:
           </label>
           <Select value={language} onValueChange={(value) => setLanguage(value)}>
-            <SelectTrigger className="w-48">
+            <SelectTrigger className="w-full lg:w-48">
               <SelectValue placeholder="Select language" />
             </SelectTrigger>
             <SelectContent>
@@ -105,13 +113,13 @@ export default function CodeEditorPage() {
         </div>
 
         <div className="mb-4">
-          <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="code">
+          <label className={`block ${textColor} text-sm font-bold mb-2`} htmlFor="code">
             Enter Your Code:
           </label>
           <Editor
-            height="500px"
+            height="400px" // Adjusted height for better responsiveness
             language={language}
-            theme="vs-light"
+            theme={editorTheme} // Set Monaco Editor theme dynamically
             value={code}
             onChange={(value) => setCode(value || '')}
             options={{
@@ -134,9 +142,9 @@ export default function CodeEditorPage() {
       </div>
 
       {/* Right Panel: Output */}
-      <div className="w-1/4 bg-white p-6 overflow-y-auto">
-        <h2 className="text-xl font-bold mb-4 text-gray-900">Output:</h2>
-        <pre className="bg-gray-100 p-4 rounded-lg overflow-auto font-mono text-sm text-gray-700">
+      <div className={`w-full lg:w-1/4 ${backgroundColor} p-6 overflow-y-auto`}>
+        <h2 className={`text-xl font-bold mb-4 ${textColor}`}>Output:</h2>
+        <pre className={`${theme === 'dark' ? 'bg-gray-800 text-gray-300' : 'bg-gray-100 text-gray-700'} p-4 rounded-lg overflow-auto font-mono text-sm`}>
           {output}
         </pre>
       </div>

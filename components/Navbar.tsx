@@ -34,7 +34,7 @@ export default function Navbar() {
   return (
     <NextNavbar isBordered>
       <NavbarBrand>
-        <Link href="/" className="flex items-center gap-2">
+        <Link href="/landing" className="flex items-center gap-2">
           <AcmeLogo />
           <p className="font-bold text-inherit">Online Coding Judge</p>
         </Link>

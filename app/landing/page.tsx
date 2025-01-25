@@ -10,6 +10,7 @@ import Image from "next/image";
 import { useTheme } from "next-themes";
 import Github from "@/components/logos/github";
 import Hero from '@/components/sections/hero/default';
+import { AuroraBackground } from '@/components/ui/AuroraBackground';
 
 const testimonials = [
   {
