@@ -1,118 +1,169 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import Link from 'next/link';
-import axios from 'axios'; // Import axios
+import { useState, useEffect } from "react";
+import { useRouter, redirect } from "next/navigation";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import Link from "next/link";
+import axios from "axios";
+import React from "react";
+import { Label } from "../../components/ui/label";
+import { cn } from "../../lib/utils";
+import { IconBrandGithub, IconBrandGoogle } from "@tabler/icons-react";
 
 export default function LoginPage() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
   const router = useRouter();
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  useEffect(() => {
+    const accessToken = localStorage.getItem("access_token");
+    if (accessToken) {
+      redirect("/editor");
+    }
+  }, []);
+
+  const handleSubmit = async (e: any) => {
     e.preventDefault();
-    setError('');
+    setError("");
 
     try {
-      // Define the URL-encoded data
       const data = new URLSearchParams();
-      data.append('username', email);
-      data.append('password', password);
-      data.append('grant_type', 'password'); // Add other required fields if needed
-      data.append('scope', '');
-      data.append('client_id', 'string'); // Replace with actual client_id
-      data.append('client_secret', 'string'); // Replace with actual client_secret
+      data.append("username", email);
+      data.append("password", password);
+      data.append("grant_type", "password");
+      data.append("scope", "");
+      data.append("client_id", "string"); // Replace with actual client_id
+      data.append("client_secret", "string"); // Replace with actual client_secret
 
-      // Send a POST request using axios
-      const response = await axios.post('http://192.168.25.241:8000/auth/jwt/login', data, {
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-          'accept': 'application/json',
-        },
-      });
+      const response = await axios.post(
+        "http://192.168.134.252:8000/auth/jwt/login",
+        data,
+        {
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+            accept: "application/json",
+          },
+        }
+      );
 
-      // Check if the request was successful
       if (response.status === 200) {
-        // Log the user info (or handle it as needed)
-        console.log('User info:', response.data);
-
-        // Store the access_token in localStorage
-        localStorage.setItem('access_token', response.data.access_token);
-
-        // Redirect to the editor page after successful login
-        router.push('/editor');
+        console.log("User info:", response.data);
+        localStorage.setItem("access_token", response.data.access_token);
+        router.push("/editor");
       } else {
-        throw new Error('Login failed. Please check your credentials.');
+        throw new Error("Login failed. Please check your credentials.");
       }
     } catch (err: any) {
-      setError(err.response?.data?.detail || 'Login failed. Please try again.');
+      setError(err.response?.data?.detail || "Login failed. Please try again.");
     }
   };
 
-  // Dark theme styles
-  const background = 'bg-gray-900'; // Dark background
-  const cardBackground = 'bg-gray-800'; // Dark card background
-  const textPrimary = 'text-white'; // White text
-  const textSecondary = 'text-gray-300'; // Light gray text
-  const borderColor = 'border-gray-700'; // Dark border
-  const inputBackground = 'bg-gray-700'; // Dark input background
-  const buttonBackground = 'bg-blue-600 hover:bg-blue-700'; // Blue button with hover effect
-  const buttonText = 'text-white'; // White button text
-  const errorColor = 'text-red-500'; // Red error text
-  const linkColor = 'text-blue-400 hover:text-blue-300'; // Blue link with hover effect
+  // Styling variables
+  const background = "bg-gray-900";
+  const cardBackground = "bg-gray-800";
+  const textPrimary = "text-white";
+  const textSecondary = "text-gray-300";
+  const borderColor = "border-gray-700";
+  const inputBackground = "bg-gray-700";
+  const buttonBackground = "bg-blue-600 hover:bg-blue-700";
+  const buttonText = "text-white";
+  const errorColor = "text-red-500";
+  const linkColor = "text-blue-400 hover:text-blue-300";
 
   return (
-    <div className={`min-h-screen flex items-center justify-center ${background}`}>
-      <div className={`p-8 rounded-lg shadow-lg w-96 border ${cardBackground} ${borderColor}`}>
-        <h1 className={`text-2xl font-semibold mb-6 text-center ${textPrimary}`}>Log In</h1>
+    <div
+      className={`${background} min-h-screen flex items-center justify-center`}
+    >
+      <div
+        className={`${cardBackground} max-w-md w-full rounded-lg p-6 shadow-lg`}
+      >
+        <h2 className={`${textPrimary} text-2xl font-bold mb-4`}>
+          Welcome to TuxCode
+        </h2>
+        <p className={`${textSecondary} mb-6`}>
+          Login to TuxCode if you can because we don't have a login flow yet.
+        </p>
+
         <form onSubmit={handleSubmit}>
-          <div className="mb-4">
-            <label className={`block text-sm font-medium mb-2 ${textSecondary}`} htmlFor="email">
-              Email
-            </label>
+          <LabelInputContainer className="mb-4">
+            <Label htmlFor="email" className={textSecondary}>
+              Email Address
+            </Label>
             <Input
-              type="email"
               id="email"
+              placeholder="yourname@example.com"
+              type="email"
+              className={`${inputBackground} ${textPrimary} ${borderColor} rounded-md`}
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="Enter your email"
-              className={`w-full ${inputBackground} ${textPrimary} border ${borderColor} rounded-md py-2 px-4`}
-              required
             />
-          </div>
-          <div className="mb-6">
-            <label className={`block text-sm font-medium mb-2 ${textSecondary}`} htmlFor="password">
+          </LabelInputContainer>
+          <LabelInputContainer className="mb-4">
+            <Label htmlFor="password" className={textSecondary}>
               Password
-            </label>
+            </Label>
             <Input
-              type="password"
               id="password"
+              placeholder="••••••••"
+              type="password"
+              className={`${inputBackground} ${textPrimary} ${borderColor} rounded-md`}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              placeholder="Enter your password"
-              className={`w-full ${inputBackground} ${textPrimary} border ${borderColor} rounded-md py-2 px-4`}
-              required
             />
-          </div>
-          {error && <p className={`text-sm mb-4 ${errorColor}`}>{error}</p>}
-          <Button
+          </LabelInputContainer>
+
+          {error && <p className={`${errorColor} mb-4`}>{error}</p>}
+
+          <button
+            className={`${buttonBackground} ${buttonText} w-full py-2 rounded-md font-medium`}
             type="submit"
-            className={`w-full font-medium py-2 rounded-md ${buttonBackground} ${buttonText}`}
           >
-            Log In
-          </Button>
+            Login
+          </button>
+
+          <div className="my-6 border-t border-gray-600" />
+
+          <div className="flex flex-col space-y-4">
+            <button
+              className={`${inputBackground} ${textPrimary} flex items-center justify-center py-2 rounded-md`}
+              type="button"
+            >
+              <IconBrandGithub className="mr-2" />
+              Login with GitHub
+            </button>
+            <button
+              className={`${inputBackground} ${textPrimary} flex items-center justify-center py-2 rounded-md`}
+              type="button"
+            >
+              <IconBrandGoogle className="mr-2" />
+              Login with Google
+            </button>
+          </div>
+
+          <div className="mt-6 text-center">
+            <p className={textSecondary}>
+              Don't have an account?{" "}
+              <Link href="/signup" className={linkColor}>
+                Sign Up
+              </Link>
+            </p>
+          </div>
         </form>
-        <p className={`text-center mt-6 text-sm ${textSecondary}`}>
-          Don't have an account?{' '}
-          <Link href="/signup" className={`hover:underline ${linkColor}`}>
-            Sign up
-          </Link>
-        </p>
       </div>
     </div>
   );
 }
+
+const LabelInputContainer = ({
+  children,
+  className,
+}: {
+  children: React.ReactNode;
+  className?: string;
+}) => {
+  return (
+    <div className={cn("flex flex-col space-y-2", className)}>{children}</div>
+  );
+};

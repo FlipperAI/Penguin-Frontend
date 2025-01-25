@@ -52,7 +52,7 @@ export default function Hero() {
               <Mockup type="responsive">
                 <Image
                   src={src}
-                  alt="Launch UI app screenshot"
+                  alt="TuxCode app screenshot"
                   width={1248}
                   height={765}
                 />

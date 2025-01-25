@@ -1,15 +1,17 @@
 "use client";
 
-import Link from "next/link";
-import { useState, useEffect } from "react";
+import Navigation from "@/components/ui/navigation";
+import { Button } from "@/components/ui/button";
 import {
-  Navbar as NextNavbar,
-  NavbarBrand,
-  NavbarContent,
-  NavbarItem,
-  Button,
-} from "@nextui-org/react";
-import { useRouter } from "next/navigation";
+  Navbar as NavbarComponent,
+  NavbarLeft,
+  NavbarRight,
+} from "@/components/ui/navbar";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { Menu } from "lucide-react";
+import LaunchUI from "@/components/logos/launch-ui";
+import { useEffect, useState } from "react";
+import { redirect, useRouter } from "next/navigation";
 import axios from "axios";
 
 export default function Navbar() {
@@ -30,12 +32,9 @@ export default function Navbar() {
         throw new Error("No access token found.");
       }
 
-      // Redirect to landing page
-      router.push("/landing");
-
       // Call logout API
       await axios.post(
-        "http://192.168.0.252:8000/auth/jwt/logout",
+        "http://192.168.134.252:8000/auth/jwt/logout",
         {},
         {
           headers: {
@@ -45,80 +44,77 @@ export default function Navbar() {
         }
       );
 
-      // Clear token from localStorage
-      localStorage.removeItem("access_token");
-      setIsAuthenticated(false); // Update state
+      localStorage.removeItem("access_token") 
+
+      // Clear token and update state
+      setIsAuthenticated(false);
+      router.push("/login");
+      
+
+      // Redirect to landing page
+      
     } catch (error) {
       console.error("Logout failed:", error);
     }
   };
 
   return (
-    <NextNavbar isBordered>
-      {/* Navbar Brand */}
-      <NavbarBrand>
-        <Link href="/landing" className="flex items-center gap-2">
-          <AcmeLogo />
-          <p className="font-bold text-inherit">Online Coding Judge</p>
-        </Link>
-      </NavbarBrand>
-
-      {/* Navbar Links */}
-      <NavbarContent className="hidden sm:flex gap-4" justify="center">
-        <NavbarItem>
-          <Link href="/landing" className="text-foreground hover:text-gray-200">
-            Home
-          </Link>
-        </NavbarItem>
-        <NavbarItem>
-          <Link href="/editor" className="text-foreground hover:text-gray-200">
-            Editor
-          </Link>
-        </NavbarItem>
-      </NavbarContent>
-
-      {/* Navbar Actions */}
-      <NavbarContent as="div" justify="end">
-        {isAuthenticated ? (
-          <>
-            <Button
-              onPress={handleLogout}
-              color="danger"
-              variant="flat"
-              className="hover:bg-red-600 hover:text-white"
-            >
-              Logout
-            </Button>
-          </>
-        ) : (
-          <>
-            <NavbarItem>
-              <Link href="/login" className="text-foreground hover:text-gray-200">
-                Login
-              </Link>
-            </NavbarItem>
-            <NavbarItem>
-              <Link href="/signup" className="text-foreground hover:text-gray-200">
-                Sign Up
-              </Link>
-            </NavbarItem>
-          </>
-        )}
-      </NavbarContent>
-    </NextNavbar>
+    <header className="sticky top-0 z-50 -mb-4 px-4 pb-4">
+      <div className="fade-bottom absolute left-0 h-24 w-full bg-background/15 backdrop-blur-lg"></div>
+      <div className="relative mx-auto max-w-container">
+        <NavbarComponent>
+          <NavbarLeft>
+            <a href="/landing" className="flex items-center gap-2 text-xl font-bold">
+              <LaunchUI />
+              TuxCode
+            </a>
+            <Navigation />
+          </NavbarLeft>
+          <NavbarRight>
+            {isAuthenticated ? (
+              <>
+                <Button variant="ghost" onClick={handleLogout}>
+                  Logout
+                </Button>
+                <Button variant="default" asChild>
+                  <a href="/editor">Editor</a>
+                </Button>
+              </>
+            ) : (
+              <>
+                <a href="/login" className="hidden text-sm md:block">
+                  Sign in
+                </a>
+                <Button variant="default" asChild>
+                  <a href="/signup">Get Started</a>
+                </Button>
+              </>
+            )}
+            <Sheet>
+              <SheetTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="shrink-0 md:hidden"
+                >
+                  <Menu className="h-5 w-5" />
+                  <span className="sr-only">Toggle navigation menu</span>
+                </Button>
+              </SheetTrigger>
+              <SheetContent side="right">
+                <nav className="grid gap-6 text-lg font-medium">
+                  <a
+                    href="/"
+                    className="flex items-center gap-2 text-xl font-bold"
+                  >
+                    <span>TuxCode</span>
+                  </a>
+                </nav>
+              </SheetContent>
+            </Sheet>
+          </NavbarRight>
+        </NavbarComponent>
+      </div>
+    </header>
   );
 }
-
-// Placeholder Logo Component
-const AcmeLogo = () => {
-  return (
-    <svg fill="none" height="36" viewBox="0 0 32 32" width="36">
-      <path
-        clipRule="evenodd"
-        d="M17.6482 10.1305L15.8785 7.02583L7.02979 22.5499H10.5278L17.6482 10.1305ZM19.8798 14.0457L18.11 17.1983L19.394 19.4511H16.8453L15.1056 22.5499H24.7272L19.8798 14.0457Z"
-        fill="currentColor"
-        fillRule="evenodd"
-      />
-    </svg>
-  );
-};

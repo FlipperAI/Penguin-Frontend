@@ -6,6 +6,7 @@ import Navbar from '@/components/Navbar';
 import Provider from '@/providers/SessionProvider';
 import { ThemeProvider } from 'next-themes'; // Import ThemeProvider
 import { usePathname } from 'next/navigation';
+import { GridBackgroundDemo } from '@/components/GridBackgroundDemo';
 
 export default function RootLayout({
   children,
@@ -14,7 +15,7 @@ export default function RootLayout({
 }) {
   const pathname = usePathname();
 
-  const noNavbarRoutes = ['/','/login','signup', '/landing', '/editor'];
+  const noNavbarRoutes = ['/','/login','/signup', '/landing'];
 
   // Check if the current route is in the noNavbarRoutes array
   const showNavbar = !noNavbarRoutes.includes(pathname);
@@ -28,6 +29,7 @@ export default function RootLayout({
           <Provider>
             {showNavbar && <Navbar />} {/* Add Navbar if needed */}
             <main className="container mx-auto p-4">{children}</main>
+            
             <FooterSection></FooterSection>
           </Provider>
         </ThemeProvider>

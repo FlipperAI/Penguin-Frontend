@@ -16,7 +16,7 @@ export default function FooterSection() {
             <FooterColumn className="col-span-2 sm:col-span-3 md:col-span-1">
               <div className="flex items-center gap-2">
                 <LaunchUI />
-                <h3 className="text-xl font-bold text-white">Launch UI</h3> {/* White text */}
+                <h3 className="text-xl font-bold text-white">TuxCode</h3> {/* White text */}
               </div>
             </FooterColumn>
             <FooterColumn>

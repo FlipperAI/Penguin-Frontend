@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/select";
 import Editor from "@monaco-editor/react";
 import axios from "axios";
+import { HoverBorderGradient } from "../../components/ui/hover-border-gradient";
 
 export default function CodeEditorPage() {
   const [code, setCode] = useState("");
@@ -37,7 +38,7 @@ export default function CodeEditorPage() {
       }
 
       const response = await axios.post(
-        "http://192.168.25.241:8000/submissions/run",
+        "http://192.168.134.252:8000/submissions/run",
         { code, language, input_data }, // Include input_data in the request payload
         {
           headers: {
@@ -145,13 +146,13 @@ export default function CodeEditorPage() {
         </div>
 
         <div className="flex items-center justify-center">
-          <Button
+          <HoverBorderGradient
             onClick={handleSubmit}
             disabled={isLoading}
             className={`w-full font-medium py-2 rounded-md ${buttonBackground} ${buttonText}`}
           >
             {isLoading ? "Running..." : "Submit Code"}
-          </Button>
+          </HoverBorderGradient>
         </div>
       </div>
 
