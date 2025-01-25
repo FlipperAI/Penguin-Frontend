@@ -1,57 +1,47 @@
 'use client';
 
-import { SessionProvider, useSession } from 'next-auth/react';
-import Link from 'next/link';
-import { Button } from '@/components/ui/button';
+import { AnimatedTestimonials } from '@/components/AnimatedTestimonials';
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { ArrowRightIcon } from "lucide-react";
+import { Mockup, MockupFrame } from "@/components/ui/mockup";
+import Glow from "@/components/ui/glow";
+import Image from "next/image";
+import { useTheme } from "next-themes";
+import Github from "@/components/logos/github";
+import Hero from '@/components/sections/hero/default';
+
+const testimonials = [
+  {
+    quote: "This platform has completely transformed the way I practice coding. The real-time feedback is amazing!",
+    name: "John Doe",
+    designation: "Software Engineer",
+    src: "https://ui.aceternity.com/_next/image?url=https%3A%2F%2Fimages.unsplash.com%2Fphoto-1535713875002-d1d0cf377fde%3Fq%3D80%26w%3D3560%26auto%3Dformat%26fit%3Dcrop%26ixlib%3Drb-4.0.3%26ixid%3DM3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%253D%253D&w=640&q=75", // Replace with actual image path
+  },
+  {
+    quote: "I love the variety of problems and the clean interface. It's perfect for preparing for coding interviews.",
+    name: "Jane Smith",
+    designation: "Frontend Developer",
+    src: "https://ui.aceternity.com/_next/image?url=https%3A%2F%2Fimages.unsplash.com%2Fphoto-1438761681033-6461ffad8d80%3Fq%3D80%26w%3D3540%26auto%3Dformat%26fit%3Dcrop%26ixlib%3Drb-4.0.3%26ixid%3DM3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%253D%253D&w=640&q=75", // Replace with actual image path
+  },
+  {
+    quote: "The isolation of code execution in Docker containers is a game-changer. It feels like a real coding environment.",
+    name: "Alex Johnson",
+    designation: "DevOps Engineer",
+    src: "https://plus.unsplash.com/premium_photo-1682096252599-e8536cd97d2b?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D  ", // Replace with actual image path
+  },
+];
 
 export default function LandingPage() {
-  const { data: session } = <SessionProvider>useSession()</SessionProvider>;
-
   return (
-    <div className="min-h-screen bg-gradient-to-r from-blue-50 to-purple-50 flex flex-col items-center justify-center p-6">
+    <div className="min-h-screen bg-gradient-to-r from-black-50 to-purple-50 flex flex-col items-center justify-center p-6">
       {/* Hero Section */}
-      <div className="text-center mb-12">
-        <h1 className="text-6xl font-bold text-gray-900 mb-4">
-          Online Coding Judge
-        </h1>
-        <p className="text-xl text-gray-600 mb-8">
-          Solve coding problems and test your skills in real-time.
-        </p>
-        {session ? (
-          <Link href="/editor">
-            <Button className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg shadow-lg transition-transform transform hover:scale-105">
-              Go to Code Editor
-            </Button>
-          </Link>
-        ) : (
-          <Link href="/login">
-            <Button className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg shadow-lg transition-transform transform hover:scale-105">
-              Get Started
-            </Button>
-          </Link>
-        )}
-      </div>
+      <Hero/>
 
-      {/* Key Features Section */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto px-4">
-        <div className="bg-white p-8 rounded-lg shadow-md hover:shadow-lg transition-shadow">
-          <h2 className="text-2xl font-bold mb-4 text-blue-600">Secure Execution</h2>
-          <p className="text-gray-600">
-            Your code runs in isolated Docker containers, ensuring security and reliability.
-          </p>
-        </div>
-        <div className="bg-white p-8 rounded-lg shadow-md hover:shadow-lg transition-shadow">
-          <h2 className="text-2xl font-bold mb-4 text-purple-600">Real-Time Output</h2>
-          <p className="text-gray-600">
-            Get instant feedback on your code with real-time output and error messages.
-          </p>
-        </div>
-        <div className="bg-white p-8 rounded-lg shadow-md hover:shadow-lg transition-shadow">
-          <h2 className="text-2xl font-bold mb-4 text-green-600">Scalable Infrastructure</h2>
-          <p className="text-gray-600">
-            Built to handle multiple submissions simultaneously with dynamic resource allocation.
-          </p>
-        </div>
+      {/* Testimonials Section */}
+      <div className="w-full max-w-6xl mx-auto px-4">
+        <h2 className="text-3xl font-bold text-center mb-8 mt-10">What Our Users Say</h2>
+        <AnimatedTestimonials testimonials={testimonials} autoplay={true} />
       </div>
 
       {/* Footer */}
