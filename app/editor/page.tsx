@@ -10,7 +10,7 @@ import axios from 'axios';
 
 export default function CodeEditorPage() {
   const [code, setCode] = useState('');
-  const [input_Data, setinput_Data] = useState(''); // State for user input_Data
+  const [input_data, setinput_data] = useState(''); // State for user input_data
   const [output, setOutput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [language, setLanguage] = useState('python');
@@ -34,7 +34,7 @@ export default function CodeEditorPage() {
 
       const response = await axios.post(
         'http://192.168.25.241:8000/submissions/run',
-        { code, language, input_Data }, // Include input_Data in the request payload
+        { code, language, input_data }, // Include input_data in the request payload
         {
           headers: {
             accept: 'application/json',
@@ -105,16 +105,16 @@ export default function CodeEditorPage() {
           />
         </div>
 
-        {/* input_Data Box for User input_Data */}
+        {/* input_data Box for User input_data */}
         <div className="mb-4">
-          <label className={`block ${textColor} text-sm font-bold mb-2`} htmlFor="input_Data">
-            input_Data for Code:
+          <label className={`block ${textColor} text-sm font-bold mb-2`} htmlFor="input_data">
+            input_data for Code:
           </label>
           <textarea
-            id="input_Data"
-            value={input_Data}
-            onChange={(e) => setinput_Data(e.target.value)}
-            placeholder="Enter input_Data for your code"
+            id="input_data"
+            value={input_data}
+            onChange={(e) => setinput_data(e.target.value)}
+            placeholder="Enter input_data for your code"
             className={`w-full p-2 rounded-lg ${theme === 'dark' ? 'bg-gray-800 text-white' : 'bg-gray-100 text-gray-900'} border ${borderColor}`}
             rows={4} // Adjust the number of rows as needed
           />
