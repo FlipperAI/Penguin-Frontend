@@ -46,9 +46,6 @@ export default function LandingPage() {
       </div>
 
       {/* Footer */}
-      <footer className="mt-12 text-center text-gray-600">
-        <p>© 2023 Online Coding Judge. All rights reserved.</p>
-      </footer>
     </div>
   );
 }
