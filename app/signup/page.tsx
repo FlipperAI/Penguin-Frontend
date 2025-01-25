@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import Link from 'next/link';
+import axios from 'axios'; // Import axios
 
 export default function SignupPage() {
   const [email, setEmail] = useState('');
@@ -12,25 +13,42 @@ export default function SignupPage() {
   const [error, setError] = useState('');
   const router = useRouter();
 
-  const handleSubmit = async (e: any) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
 
     try {
-      const response = await fetch('/api/signup', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }),
-      });
+      // Send a POST request to the registration endpoint
+      const response = await axios.post(
+        'http://192.168.25.241:8000/auth/register',
+        {
+          email,
+          password,
+          is_active: true, // Set default values as per the API requirements
+          is_superuser: false,
+          is_verified: false,
+        },
+        {
+          headers: {
+            accept: 'application/json',
+            'Content-Type': 'application/json',
+          },
+        }
+      );
 
-      if (!response.ok) {
-        const data = await response.json();
-        throw new Error(data.message || 'Signup failed');
+      // If registration is successful, redirect to the login page
+      if (response.status === 201) {
+        router.push('/login');
+      } else {
+        throw new Error('Registration failed. Please try again.');
       }
-
-      router.push('/login');
     } catch (err: any) {
-      setError(err.message);
+      // Handle errors
+      if (err.response) {
+        setError(err.response.data.detail || 'Registration failed. Please try again.');
+      } else {
+        setError('An unexpected error occurred. Please try again.');
+      }
     }
   };
 

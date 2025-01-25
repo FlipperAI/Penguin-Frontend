@@ -16,11 +16,19 @@ import {
   Avatar,
   Button,
 } from '@nextui-org/react';
+import { useRouter } from 'next/navigation';
 
 export default function Navbar() {
   const { data: session, status } = useSession();
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
+  const router = useRouter();
+
+  // Handle logout
+  const handleLogout = () => {
+    localStorage.removeItem('access_token'); // Clear access token
+    router.push('/login'); // Redirect to login page
+  };
 
   // Ensure the component is mounted before rendering
   useEffect(() => {
@@ -66,7 +74,7 @@ export default function Navbar() {
         {status === 'authenticated' && (
           <NavbarItem>
             <Button
-              onClick={() => signOut()}
+              onPress={handleLogout}
               color="danger"
               variant="flat"
               className="hover:bg-red-600 hover:text-white"
