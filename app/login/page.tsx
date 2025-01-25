@@ -5,8 +5,6 @@ import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import Link from 'next/link';
-import { signIn } from 'next-auth/react';
-import { useTheme } from 'next-themes'; // Import useTheme from next-themes
 import axios from 'axios'; // Import axios
 
 export default function LoginPage() {
@@ -14,7 +12,6 @@ export default function LoginPage() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const router = useRouter();
-  const { theme } = useTheme(); // Get the current theme
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -56,18 +53,17 @@ export default function LoginPage() {
     }
   };
 
-  // Define theme-based styles
-  const isDarkMode = theme === 'dark';
-  const background = isDarkMode ? 'bg-gray-900' : 'bg-gray-50'; // Softer light background
-  const cardBackground = isDarkMode ? 'bg-gray-700' : 'bg-slate'; // Subtle gray for dark mode
-  const textPrimary = isDarkMode ? 'text-white' : 'text-gray-900';
-  const textSecondary = isDarkMode ? 'text-gray-300' : 'text-gray-600'; // Softer secondary text
-  const borderColor = isDarkMode ? 'border-gray-600' : 'border-gray-300'; // Softer border color
-  const inputBackground = isDarkMode ? 'bg-gray-800' : 'bg-gray-100'; // Subtle background for inputs
-  const buttonBackground = isDarkMode ? 'bg-black-700 hover:bg-blue-600' : 'bg-zinc-900 hover:bg-zinc-400'; // Softer button hover
-  const buttonText = 'text-white'; // Keep button text white for visibility
-  const errorColor = 'text-red-500'; // Error color remains the same for visibility
-  const linkColor = isDarkMode ? 'text-blue-400' : 'text-blue-600'; // Slightly lighter for visibility
+  // Dark theme styles
+  const background = 'bg-gray-900'; // Dark background
+  const cardBackground = 'bg-gray-800'; // Dark card background
+  const textPrimary = 'text-white'; // White text
+  const textSecondary = 'text-gray-300'; // Light gray text
+  const borderColor = 'border-gray-700'; // Dark border
+  const inputBackground = 'bg-gray-700'; // Dark input background
+  const buttonBackground = 'bg-blue-600 hover:bg-blue-700'; // Blue button with hover effect
+  const buttonText = 'text-white'; // White button text
+  const errorColor = 'text-red-500'; // Red error text
+  const linkColor = 'text-blue-400 hover:text-blue-300'; // Blue link with hover effect
 
   return (
     <div className={`min-h-screen flex items-center justify-center ${background}`}>

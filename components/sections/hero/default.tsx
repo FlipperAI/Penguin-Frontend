@@ -7,7 +7,7 @@ import { Mockup, MockupFrame } from "../../ui/mockup";
 import Glow from "../../ui/glow";
 import Image from "next/image";
 import { useTheme } from "next-themes";
-
+import { HoverBorderGradient } from "../../ui/hover-border-gradient";
 export default function Hero() {
   const { resolvedTheme } = useTheme();
   console.log(resolvedTheme)
@@ -39,9 +39,9 @@ export default function Hero() {
           </p>
           <div className="relative z-10 flex animate-appear justify-center gap-4 delay-300">
             <div className="relative z-10 flex animate-appear justify-center gap-4 delay-300">
-              <Button variant="default" size="lg" asChild>
+              <HoverBorderGradient variant="default" size="lg" asChild>
                 <a href="/login">Get Started</a>
-              </Button>
+              </HoverBorderGradient>
             </div>
           </div>
           <div className="relative pt-12">

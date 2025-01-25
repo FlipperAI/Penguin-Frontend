@@ -1,72 +1,61 @@
-'use client';
+"use client";
 
-import Link from 'next/link';
-import { useSession, signOut } from 'next-auth/react';
-import { useTheme } from 'next-themes';
-import { useEffect, useState } from 'react';
+import Link from "next/link";
+import { useState, useEffect } from "react";
 import {
   Navbar as NextNavbar,
   NavbarBrand,
   NavbarContent,
   NavbarItem,
-  Dropdown,
-  DropdownTrigger,
-  DropdownMenu,
-  DropdownItem,
-  Avatar,
   Button,
-} from '@nextui-org/react';
-import { useRouter } from 'next/navigation';
-import axios from 'axios'; // Import axios for API calls
+} from "@nextui-org/react";
+import { useRouter } from "next/navigation";
+import axios from "axios";
 
 export default function Navbar() {
-  const { data: session, status } = useSession();
-  const { theme, setTheme } = useTheme();
-  const [mounted, setMounted] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const router = useRouter();
 
-  // Ensure the component is mounted before rendering
+  // Check for access token in localStorage after the component mounts
   useEffect(() => {
-    setMounted(true);
+    const token = localStorage.getItem("access_token");
+    setIsAuthenticated(!!token); // Set true if token exists
   }, []);
 
   // Handle logout
   const handleLogout = async () => {
     try {
-      const accessToken = localStorage.getItem('access_token');
+      const accessToken = localStorage.getItem("access_token");
       if (!accessToken) {
-        throw new Error('No access token found.');
+        throw new Error("No access token found.");
       }
 
-      // Redirect to the login page
-      router.push('/landing');
+      // Redirect to landing page
+      router.push("/landing");
 
-      // Call the logout API
+      // Call logout API
       await axios.post(
-        'http://192.168.0.252:8000/auth/jwt/logout',
-        {}, // Empty body
+        "http://192.168.0.252:8000/auth/jwt/logout",
+        {},
         {
           headers: {
-            accept: 'application/json',
+            accept: "application/json",
             Authorization: `Bearer ${accessToken}`,
           },
         }
       );
 
-      // Clear the access token from localStorage
-      localStorage.removeItem('access_token');
-
+      // Clear token from localStorage
+      localStorage.removeItem("access_token");
+      setIsAuthenticated(false); // Update state
     } catch (error) {
-      console.error('Logout failed:', error);
+      console.error("Logout failed:", error);
     }
   };
 
-  if (!mounted) {
-    return null; // Avoid rendering until mounted
-  }
-
   return (
     <NextNavbar isBordered>
+      {/* Navbar Brand */}
       <NavbarBrand>
         <Link href="/landing" className="flex items-center gap-2">
           <AcmeLogo />
@@ -74,6 +63,7 @@ export default function Navbar() {
         </Link>
       </NavbarBrand>
 
+      {/* Navbar Links */}
       <NavbarContent className="hidden sm:flex gap-4" justify="center">
         <NavbarItem>
           <Link href="/landing" className="text-foreground hover:text-gray-200">
@@ -87,54 +77,19 @@ export default function Navbar() {
         </NavbarItem>
       </NavbarContent>
 
+      {/* Navbar Actions */}
       <NavbarContent as="div" justify="end">
-        {/* Theme Toggle Button */}
-        <Button
-          onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-          className="p-2 rounded-lg bg-gray-200 dark:bg-gray-600 text-gray-800 dark:text-white"
-        >
-          {theme === 'dark' ? '🌞' : '🌙'}
-        </Button>
-
-        {/* Logout Button (Visible when authenticated) */}
-        {status === 'authenticated' && (
-          <NavbarItem>
+        {isAuthenticated ? (
+          <>
             <Button
-              onPress={handleLogout} // Use the handleLogout function
+              onPress={handleLogout}
               color="danger"
               variant="flat"
               className="hover:bg-red-600 hover:text-white"
             >
               Logout
             </Button>
-          </NavbarItem>
-        )}
-
-        {/* User Dropdown */}
-        {status === 'authenticated' ? (
-          <Dropdown placement="bottom-end">
-            <DropdownTrigger>
-              <Avatar
-                isBordered
-                as="button"
-                className="transition-transform"
-                color="secondary"
-                name={session.user?.email || 'User'}
-                size="sm"
-                src={session.user?.image || 'https://i.pravatar.cc/150?u=a042581f4e29026704d'}
-              />
-            </DropdownTrigger>
-            <DropdownMenu aria-label="Profile Actions" variant="flat">
-              <DropdownItem key="profile" className="h-14 gap-2">
-                <p className="font-semibold">Signed in as</p>
-                <p className="font-semibold">{session.user?.email}</p>
-              </DropdownItem>
-              <DropdownItem key="settings">My Settings</DropdownItem>
-              <DropdownItem key="logout" color="danger" onClick={handleLogout}>
-                Log Out
-              </DropdownItem>
-            </DropdownMenu>
-          </Dropdown>
+          </>
         ) : (
           <>
             <NavbarItem>
@@ -154,7 +109,7 @@ export default function Navbar() {
   );
 }
 
-// AcmeLogo Component (Placeholder for your logo)
+// Placeholder Logo Component
 const AcmeLogo = () => {
   return (
     <svg fill="none" height="36" viewBox="0 0 32 32" width="36">

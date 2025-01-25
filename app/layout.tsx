@@ -1,5 +1,6 @@
 'use client'
 
+import FooterSection from '@/components/sections/footer/default';
 import './globals.css';
 import Navbar from '@/components/Navbar';
 import Provider from '@/providers/SessionProvider';
@@ -13,11 +14,11 @@ export default function RootLayout({
 }) {
   const pathname = usePathname();
 
-  const noNavbarRoutes = ['/','/login','signup', '/landing'];
+  const noNavbarRoutes = ['/','/login','signup', '/landing', '/editor'];
 
   // Check if the current route is in the noNavbarRoutes array
   const showNavbar = !noNavbarRoutes.includes(pathname);
-  
+
   console.log(pathname)
   console.log(showNavbar)
   return (
@@ -27,6 +28,7 @@ export default function RootLayout({
           <Provider>
             {showNavbar && <Navbar />} {/* Add Navbar if needed */}
             <main className="container mx-auto p-4">{children}</main>
+            <FooterSection></FooterSection>
           </Provider>
         </ThemeProvider>
       </body>

@@ -11,16 +11,14 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import Editor from "@monaco-editor/react";
-import { useTheme } from "next-themes";
 import axios from "axios";
 
 export default function CodeEditorPage() {
   const [code, setCode] = useState("");
-  const [input_data, setinput_data] = useState(""); // State for user input_data
+  const [input_data, setInputData] = useState(""); // State for user input
   const [output, setOutput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [language, setLanguage] = useState("python");
-  const { theme } = useTheme();
 
   // Redirect to login if not authenticated
   useEffect(() => {
@@ -52,7 +50,7 @@ export default function CodeEditorPage() {
 
       // Set the output from the response
       if (response.data) {
-        setOutput(response.data); // Pretty-print JSON output
+        setOutput(response.data); // Display the output
       } else {
         setOutput("No output or message received from the server.");
       }
@@ -67,16 +65,18 @@ export default function CodeEditorPage() {
     }
   };
 
-  // Theme-based styles
-  const backgroundColor = theme === "dark" ? "bg-gray-900" : "bg-white";
-  const textColor = theme === "dark" ? "text-white" : "text-gray-900";
-  const borderColor = theme === "dark" ? "border-gray-700" : "border-gray-200";
-  const editorTheme = theme === "dark" ? "vs-dark" : "vs-light";
+  // Dark theme styles
+  const backgroundColor = "bg-gray-900"; // Dark background
+  const textColor = "text-white"; // White text
+  const borderColor = "border-gray-700"; // Dark border
+  const inputBackground = "bg-gray-800"; // Dark input background
+  const buttonBackground = "bg-blue-600 hover:bg-blue-700"; // Blue button with hover effect
+  const buttonText = "text-white"; // White button text
+  const errorColor = "text-red-500"; // Red error text
+  const editorTheme = "vs-dark"; // Dark theme for Monaco Editor
 
   return (
-    <div
-      className={`min-h-screen ${backgroundColor} flex flex-col lg:flex-row`}
-    >
+    <div className={`min-h-screen ${backgroundColor} flex flex-col lg:flex-row`}>
       {/* Left Panel: Code Editor */}
       <div
         className={`w-full lg:w-1/2 ${backgroundColor} p-6 border-b lg:border-r ${borderColor}`}
@@ -115,7 +115,7 @@ export default function CodeEditorPage() {
           <Editor
             height={`${(window.innerHeight * 2) / 5}px`} // Adjusted height for better visibility
             language={language}
-            theme={editorTheme}
+            theme={editorTheme} // Dark theme for Monaco Editor
             value={code}
             onChange={(value) => setCode(value || "")}
             options={{
@@ -126,7 +126,7 @@ export default function CodeEditorPage() {
           />
         </div>
 
-        {/* input_data Box for User input_data */}
+        {/* Input Box for User Input */}
         <div className="mb-4">
           <label
             className={`block ${textColor} text-sm font-bold mb-2`}
@@ -137,13 +137,9 @@ export default function CodeEditorPage() {
           <textarea
             id="input_data"
             value={input_data}
-            onChange={(e) => setinput_data(e.target.value)}
-            placeholder="Enter Input for your code"
-            className={`w-full p-2 rounded-lg ${
-              theme === "dark"
-                ? "bg-gray-800 text-white"
-                : "bg-gray-100 text-gray-900"
-            } border ${borderColor}`}
+            onChange={(e) => setInputData(e.target.value)}
+            placeholder="Enter input for your code"
+            className={`w-full p-2 rounded-lg ${inputBackground} ${textColor} border ${borderColor}`}
             rows={4} // Adjust the number of rows as needed
           />
         </div>
@@ -152,7 +148,7 @@ export default function CodeEditorPage() {
           <Button
             onClick={handleSubmit}
             disabled={isLoading}
-            className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-lg shadow-md transition-transform transform hover:scale-105"
+            className={`w-full font-medium py-2 rounded-md ${buttonBackground} ${buttonText}`}
           >
             {isLoading ? "Running..." : "Submit Code"}
           </Button>
@@ -160,26 +156,15 @@ export default function CodeEditorPage() {
       </div>
 
       {/* Right Panel: Output */}
-      
       <div
-        id="output"
         className={`w-full lg:w-1/2 ${backgroundColor} p-6 overflow-y-auto`}
       >
         <h2 className={`text-xl font-bold mb-4 ${textColor}`}>Output:</h2>
-        <div
-          style={{
-            padding: "20px",
-            backgroundColor: "#2d2d2d",
-            color: "#f8f8f2",
-            borderRadius: "8px",
-          }}
+        <pre
+          className={`bg-gray-800 text-gray-300 p-4 rounded-lg overflow-auto font-mono text-sm`}
         >
-          <pre
-            style={{ margin: 0, fontFamily: "monospace", overflowX: "auto" }}
-          >
-            {output}
-          </pre>
-        </div>
+          {output}
+        </pre>
       </div>
     </div>
   );
