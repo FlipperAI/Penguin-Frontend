@@ -20,6 +20,11 @@ export default function CodeEditorPage() {
   const [output, setOutput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [language, setLanguage] = useState("python");
+  const [executionDetails, setExecutionDetails] = useState({
+    exit_code: null,
+    exec_time: null,
+    stderr: "",
+  });
 
   // Redirect to login if not authenticated
   useEffect(() => {
@@ -38,7 +43,7 @@ export default function CodeEditorPage() {
       }
 
       const response = await axios.post(
-        "http://192.168.134.252:8000/submissions/run",
+        "http://192.168.25.76:8000/submissions/run",
         { code, language, input_data }, // Include input_data in the request payload
         {
           headers: {
@@ -46,21 +51,41 @@ export default function CodeEditorPage() {
             Authorization: `Bearer ${accessToken}`,
             "Content-Type": "application/json",
           },
+        },
+        {
+          signal: AbortSignal.timeout(1000000),
         }
       );
 
-      // Set the output from the response
-      if (response.data) {
-        setOutput(response.data); // Display the output
+      // Check if the response data is a JSON object or a string
+      if (typeof response.data === "object" && response.data !== null) {
+        // If it's a JSON object, format it nicely
+        setOutput(response.data.stdout || "No output");
+        setExecutionDetails({
+          exit_code: response.data.exit_code,
+          exec_time: response.data.exec_time,
+          stderr: response.data.stderr || "",
+        });
       } else {
-        setOutput("No output or message received from the server.");
+        // If it's a string, display it directly
+        setOutput(response.data);
+        setExecutionDetails({
+          exit_code: null,
+          exec_time: null,
+          stderr: "",
+        });
       }
     } catch (error: any) {
       setOutput(
         error.response?.data?.detail ||
-          error.message ||
-          "Error: Unable to fetch the result."
+        error.message ||
+        "Error: Unable to fetch the result."
       );
+      setExecutionDetails({
+        exit_code: null,
+        exec_time: null,
+        stderr: error.response?.data?.detail || error.message || "",
+      });
     } finally {
       setIsLoading(false);
     }
@@ -101,7 +126,7 @@ export default function CodeEditorPage() {
               <SelectItem value="javascript">JavaScript</SelectItem>
               <SelectItem value="cpp">C++</SelectItem>
               <SelectItem value="java">Java</SelectItem>
-              <SelectItem value="C">C</SelectItem>
+              <SelectItem value="c">C</SelectItem>
             </SelectContent>
           </Select>
         </div>
@@ -160,12 +185,34 @@ export default function CodeEditorPage() {
       <div
         className={`w-full lg:w-1/2 ${backgroundColor} p-6 overflow-y-auto`}
       >
-        <h2 className={`text-xl font-bold mb-4 ${textColor}`}>Output:</h2>
+        <div className="flex items-center justify-between mb-4">
+          <h2 className={`text-xl font-bold ${textColor}`}>Output:</h2>
+          {executionDetails.exec_time !== null && (
+            <p className={`text-sm ${textColor}`}>
+              Exit Code: {executionDetails.exit_code} | Execution Time:{" "}
+              {executionDetails.exec_time.toFixed(3)} seconds
+            </p>
+          )}
+        </div>
+
+        {/* Output Box */}
         <pre
-          className={`bg-gray-800 text-gray-300 p-4 rounded-lg overflow-auto font-mono text-sm`}
+          className={`bg-gray-800 text-gray-300 p-4 rounded-lg overflow-auto font-mono text-sm mb-4`}
         >
           {output}
         </pre>
+
+        {/* Stderr Box (only shown if there is an error) */}
+        {executionDetails.stderr && (
+          <div className="mt-4">
+            <h3 className={`text-lg font-bold ${textColor} mb-2`}>Error:</h3>
+            <pre
+              className={`bg-red-900 text-red-200 p-4 rounded-lg overflow-auto font-mono text-sm`}
+            >
+              {executionDetails.stderr}
+            </pre>
+          </div>
+        )}
       </div>
     </div>
   );

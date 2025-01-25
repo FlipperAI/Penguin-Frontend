@@ -38,7 +38,7 @@ export default function LoginPage() {
       data.append("client_secret", "string"); // Replace with actual client_secret
 
       const response = await axios.post(
-        "http://192.168.134.252:8000/auth/jwt/login",
+        "http://192.168.25.76:8000/auth/jwt/login",
         data,
         {
           headers: {
@@ -56,7 +56,7 @@ export default function LoginPage() {
         throw new Error("Login failed. Please check your credentials.");
       }
     } catch (err: any) {
-      setError(err.response?.data?.detail || "Login failed. Please try again.");
+      setError("Login failed. Please check your credentials.");
     }
   };
 

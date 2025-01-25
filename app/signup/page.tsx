@@ -38,7 +38,7 @@ export default function SignupPage() {
       };
 
       const response = await axios.post(
-        "http://192.168.134.252:8000/auth/register",
+        "http://192.168.25.76:8000/auth/register",
         payload,
         {
           headers: {
