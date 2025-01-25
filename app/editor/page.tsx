@@ -1,15 +1,23 @@
 'use client';
 
+import { useSession, SessionProvider } from 'next-auth/react';
+import { redirect } from 'next/navigation';
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import Editor from '@monaco-editor/react';
 
 export default function CodeEditorPage() {
+  const { data: session } = useSession();
   const [code, setCode] = useState('');
   const [output, setOutput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [language, setLanguage] = useState('python');
+  console.log(session)
+  // Redirect to login if not authenticated
+  if (!session) {
+    redirect('/login');
+  }
 
   // Hardcoded question details
   const question = {

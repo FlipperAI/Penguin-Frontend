@@ -1,7 +1,12 @@
+'use client';
+
+import { SessionProvider, useSession } from 'next-auth/react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 
 export default function LandingPage() {
+  const { data: session } = <SessionProvider>useSession()</SessionProvider>;
+
   return (
     <div className="min-h-screen bg-gradient-to-r from-blue-50 to-purple-50 flex flex-col items-center justify-center p-6">
       {/* Hero Section */}
@@ -10,13 +15,21 @@ export default function LandingPage() {
           Online Coding Judge
         </h1>
         <p className="text-xl text-gray-600 mb-8">
-          Run your code in isolated Docker containers and get real-time results.
+          Solve coding problems and test your skills in real-time.
         </p>
-        <Link href="/editor">
-          <Button className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg shadow-lg transition-transform transform hover:scale-105">
-            Start Coding Now
-          </Button>
-        </Link>
+        {session ? (
+          <Link href="/editor">
+            <Button className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg shadow-lg transition-transform transform hover:scale-105">
+              Go to Code Editor
+            </Button>
+          </Link>
+        ) : (
+          <Link href="/login">
+            <Button className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg shadow-lg transition-transform transform hover:scale-105">
+              Get Started
+            </Button>
+          </Link>
+        )}
       </div>
 
       {/* Key Features Section */}
