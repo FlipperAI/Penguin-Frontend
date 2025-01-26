@@ -38,7 +38,7 @@ export default function LoginPage() {
       data.append("client_secret", "string"); // Replace with actual client_secret
 
       const response = await axios.post(
-        "http://192.168.25.76:8000/auth/jwt/login",
+        "http://172.210.29.213:8000/auth/jwt/login",
         data,
         {
           headers: {

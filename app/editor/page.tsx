@@ -43,7 +43,7 @@ export default function CodeEditorPage() {
       }
 
       const response = await axios.post(
-        "http://192.168.25.76:8000/submissions/run",
+        "http://172.210.29.213:8000/submissions/run",
         { code, language, input_data }, // Include input_data in the request payload
         {
           headers: {

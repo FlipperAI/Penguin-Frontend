@@ -34,7 +34,7 @@ export default function Navbar() {
 
       // Call logout API
       await axios.post(
-        "http://192.168.25.76:8000/auth/jwt/logout",
+        "http://172.210.29.213:8000/auth/jwt/logout",
         {},
         {
           headers: {
