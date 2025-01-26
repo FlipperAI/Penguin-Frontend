@@ -1,7 +1,7 @@
 "use client";
 
 import { redirect } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Select,
@@ -10,9 +10,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import Editor from "@monaco-editor/react";
 import axios from "axios";
 import { HoverBorderGradient } from "../../components/ui/hover-border-gradient";
+import * as monaco from "monaco-editor";
+import { registerCompletion } from "monacopilot";
 
 export default function CodeEditorPage() {
   const [code, setCode] = useState("");
@@ -26,6 +27,9 @@ export default function CodeEditorPage() {
     stderr: "",
   });
 
+  const editorRef = useRef<monaco.editor.IStandaloneCodeEditor | null>(null); // Ref to store the Monaco Editor instance
+  const editorContainerRef = useRef<HTMLDivElement | null>(null); // Ref to store the editor container
+
   // Redirect to login if not authenticated
   useEffect(() => {
     const accessToken = localStorage.getItem("access_token");
@@ -33,6 +37,40 @@ export default function CodeEditorPage() {
       redirect("/login");
     }
   }, []);
+
+  // Initialize Monaco Editor and Monacopilot
+  useEffect(() => {
+    if (editorContainerRef.current) {
+      // Initialize Monaco Editor
+      const editor = monaco.editor.create(editorContainerRef.current, {
+        value: code,
+        language: language,
+        theme: "vs-dark", // Dark theme for Monaco Editor
+        fontSize: 14,
+        minimap: { enabled: false },
+        scrollBeyondLastLine: false,
+      });
+
+      // Store the editor instance in the ref
+      editorRef.current = editor;
+
+      // Register Monacopilot for code completion
+      registerCompletion(monaco, editor, {
+        endpoint: "/api/complete", // Replace with your completion API endpoint
+        language: language,
+      });
+
+      // Update the code state when the editor content changes
+      editor.onDidChangeModelContent(() => {
+        setCode(editor.getValue());
+      });
+
+      // Cleanup on unmount
+      return () => {
+        editor.dispose();
+      };
+    }
+  }, [language]); // Reinitialize editor when the language changes
 
   const handleSubmit = async () => {
     setIsLoading(true);
@@ -99,7 +137,6 @@ export default function CodeEditorPage() {
   const buttonBackground = "bg-blue-600 hover:bg-blue-700"; // Blue button with hover effect
   const buttonText = "text-white"; // White button text
   const errorColor = "text-red-500"; // Red error text
-  const editorTheme = "vs-dark"; // Dark theme for Monaco Editor
 
   return (
     <div className={`min-h-screen ${backgroundColor} flex flex-col lg:flex-row`}>
@@ -136,19 +173,13 @@ export default function CodeEditorPage() {
             className={`block ${textColor} text-sm font-bold mb-2 font-sans`}
             htmlFor="code"
           >
-	  Editor
+            Editor
           </label>
-          <Editor
-            height={`${(window.innerHeight * 2) / 5}px`} // Adjusted height for better visibility
-            language={language}
-            theme={editorTheme} // Dark theme for Monaco Editor
-            value={code}
-            onChange={(value) => setCode(value || "")}
-            options={{
-              fontSize: 14,
-              minimap: { enabled: false },
-              scrollBeyondLastLine: false,
-            }}
+          {/* Monaco Editor Container */}
+          <div
+            ref={editorContainerRef}
+            style={{ height: `${(window.innerHeight * 2) / 5}px` }}
+            className="border border-gray-700 rounded-lg"
           />
         </div>
 

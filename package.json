@@ -29,6 +29,8 @@
     "clsx": "^2.1.1",
     "lucide-react": "^0.474.0",
     "mini-svg-data-uri": "^1.4.4",
+    "monaco-editor-copilot": "^0.1.8",
+    "monacopilot": "^0.17.0",
     "motion": "^12.0.5",
     "next": "14.2.16",
     "next-auth": "^4.24.11",
