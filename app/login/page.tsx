@@ -15,6 +15,7 @@ export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [githubLoading, setGithubLoading] = useState(false); // State for GitHub button loading
   const router = useRouter();
 
   useEffect(() => {
@@ -38,7 +39,7 @@ export default function LoginPage() {
       data.append("client_secret", "string"); // Replace with actual client_secret
 
       const response = await axios.post(
-        "http://192.168.25.76:8000/auth/jwt/login",
+        `http://${process.env.NEXT_PUBLIC_API_HOST}/auth/jwt/login`,
         data,
         {
           headers: {
@@ -57,6 +58,30 @@ export default function LoginPage() {
       }
     } catch (err: any) {
       setError("Login failed. Please check your credentials.");
+    }
+  };
+
+  const handleGitHubLogin = async () => {
+    setGithubLoading(true); // Set loading state for GitHub button
+
+    try {
+      // Call the backend to get the GitHub OAuth authorization URL
+      const response = await fetch(
+        `http://${process.env.NEXT_PUBLIC_API_HOST}/auth/github/authorize`
+      );
+      const data = await response.json();
+
+      if (data.authorization_url) {
+        // Redirect the user to GitHub OAuth page
+        window.location.href = data.authorization_url;
+      } else {
+        throw new Error("Failed to get GitHub OAuth URL");
+      }
+    } catch (error) {
+      console.error("GitHub OAuth error:", error);
+      setError("Failed to initiate GitHub login. Please try again.");
+    } finally {
+      setGithubLoading(false); // Reset loading state
     }
   };
 
@@ -129,16 +154,11 @@ export default function LoginPage() {
             <button
               className={`${inputBackground} ${textPrimary} flex items-center justify-center py-2 rounded-md`}
               type="button"
+              onClick={handleGitHubLogin}
+              disabled={githubLoading} // Disable button while loading
             >
               <IconBrandGithub className="mr-2" />
-              Login with GitHub
-            </button>
-            <button
-              className={`${inputBackground} ${textPrimary} flex items-center justify-center py-2 rounded-md`}
-              type="button"
-            >
-              <IconBrandGoogle className="mr-2" />
-              Login with Google
+              {githubLoading ? "Redirecting..." : "Login with GitHub"}
             </button>
           </div>
 

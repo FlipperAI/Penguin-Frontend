@@ -43,7 +43,7 @@ export default function CodeEditorPage() {
       }
 
       const response = await axios.post(
-        "http://192.168.25.76:8000/submissions/run",
+        `http://${process.env.NEXT_PUBLIC_API_HOST}/submissions/run`,
         { code, language, input_data }, // Include input_data in the request payload
         {
           headers: {
@@ -131,12 +131,12 @@ export default function CodeEditorPage() {
           </Select>
         </div>
 
-        <div className="mb-4">
+        <div className="mb-4 w-full">
           <label
-            className={`block ${textColor} text-sm font-bold mb-2`}
+            className={`block ${textColor} text-sm font-bold mb-2 font-sans`}
             htmlFor="code"
           >
-            Enter Your Code:
+	  Editor
           </label>
           <Editor
             height={`${(window.innerHeight * 2) / 5}px`} // Adjusted height for better visibility

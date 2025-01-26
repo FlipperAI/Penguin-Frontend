@@ -38,7 +38,7 @@ export default function SignupPage() {
       };
 
       const response = await axios.post(
-        "http://192.168.25.76:8000/auth/register",
+        `http://${process.env.NEXT_PUBLIC_API_HOST}/auth/register`,
         payload,
         {
           headers: {
